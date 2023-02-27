@@ -16,6 +16,8 @@ Imports:
     assertions (>= 0.0.0.9000),
     data.table,
     mutationtypes (>= 0.0.0.9000)
-Remotes:  
+Remotes: 
     selkamand/assertions,
     selkamand/mutationtypes
+URL: https://github.com/selkamand/vcf2mafR
+BugReports: https://github.com/selkamand/vcf2mafR/issues
