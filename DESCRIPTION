@@ -7,6 +7,8 @@ Authors@R:
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Encoding: UTF-8
@@ -21,3 +23,4 @@ Remotes:
     selkamand/mutationtypes
 URL: https://github.com/selkamand/vcf2mafR
 BugReports: https://github.com/selkamand/vcf2mafR/issues
+VignetteBuilder: knitr

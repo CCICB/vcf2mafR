@@ -42,4 +42,3 @@ remotes::install_github('CCICB/vcf2mafR')
 * `df2maf` : Converts VCF-like data.frames to MAF format
 * `vcf2maf`: Converts VCF files to MAF format
 
-

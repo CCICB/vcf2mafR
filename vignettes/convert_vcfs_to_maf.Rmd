@@ -1,0 +1,33 @@
+---
+title: "convert_vcfs_to_maf"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{convert_vcfs_to_maf}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(vcf2mafR)
+```
+
+
+# Rationale
+
+This vignette describes the workflow of converting a VCF file to a MAF file.
+
+There are 3 steps:
+
+1. Ensure you VCF file has a valid structure (we should autodetect):
+  a) Single Tumour VCF with 2 'sample' columns (one for TUMOR and one for GERMLINE)
+  b) Single Tumour VCF with no 'sample' columns (assume all mutations are somatic / Unknown)
+2. VEP-annotate your VCF (preferably VEP100, for consistency with the main packages)
+3. Convert to MAF with vcf2maf(`path_to_vcf`)
