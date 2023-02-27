@@ -211,7 +211,7 @@ df2maf <- function(
 
   if(!keep_all){
    #cli::cli_alert_info("Dropping all non-essential columns without explicit mapping")
-    colnames <- c(new_names, "NCBI_Build", "Start_Position", "End_Position", "Variant_Type", "Inframe")
+    colnames <- c(new_names, "NCBI_Build", "Start_Position", "End_Position", "Variant_Classification", "Variant_Type", "Inframe")
     colnames <- colnames[colnames != "Position_1based"]
     dt_maf <- dt_maf[, colnames, with=FALSE]
   }
