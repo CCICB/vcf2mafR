@@ -29,6 +29,7 @@
 #' @param col_matched_normal_sample_identifier name of column describing the matched normal sample identifier
 #' @param col_sequencer name of column describing the instrument used to produce data (string)
 #' @param col_sequence_source name of column describing the molecular assay type used to produce the analytes used for sequencing (string). Elements are usually one of 'WGS', 'WGA', 'WXS', 'RNA-seq', etc
+#' @param col_mutation_status name of column describing the mutation status (string). Elements must be one of: None, Germline, Somatic, LOH, Post-transcriptional modification, or Unknown
 #' @return a maf-like data.frame (data.table)
 #' @export
 #'
@@ -53,7 +54,8 @@ df2maf <- function(
     col_dbSNP_validation_status = NULL,
     col_matched_normal_sample_identifier = NULL,
     col_sequencer = NULL,
-    col_sequence_source = NULL
+    col_sequence_source = NULL,
+    col_mutation_status = NULL
     ){
 
   # Assertions
@@ -134,11 +136,31 @@ df2maf <- function(
 
   # Sequence_Source
   if(!is.null(col_sequence_source)){
+    valid_sequence_sources <- c("WGS", "WGA", "WXS", "RNA-Seq", "miRNA-Seq", "Bisulfite-Seq",
+                                "VALIDATION", "Other", "ncRNA-Seq", "WCS", "CLONE", "POOLCLONE",
+                                "AMPLICON", "CLONEEND", "FINISHING", "ChIP-Seq", "MNase-Seq",
+                                "DNase-Hypersensitivity", "EST", "FL-cDNA", "CTS", "MRE-Seq",
+                                "MeDIP-Seq", "MBD-Seq", "Tn-Seq", "FAIRE-seq", "SELEX", "RIP-Seq",
+                                "ChIA-PET")
+
     assertions::assert_string(col_sequence_source)
     assertions::assert_names_include(data, col_sequence_source)
+    assertions::assert_subset(data[[col_sequence_source]], valid_sequence_sources)
+
     old_names <- c(old_names, col_sequence_source)
     new_names <- c(new_names, "Sequence_Source")
   }
+
+  if(!is.null(col_mutation_status)){
+    valid_mutation_statuses <- c("None", "Germline", "Somatic", "LOH", "Post-transcriptional modification", "Unknown")
+    assertions::assert_string(col_mutation_status)
+    assertions::assert_names_include(data, col_mutation_status)
+    assertions::assert_subset(data[[col_mutation_status]], valid_mutation_statuses)
+    old_names <- c(old_names, col_mutation_status)
+    new_names <- c(new_names, "Mutation_Status")
+  }
+
+
 
   # Create Data.Table
   dt_maf <- data.table::data.table(data)

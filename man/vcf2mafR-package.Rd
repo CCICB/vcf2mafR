@@ -8,6 +8,14 @@
 \description{
 What the package does (one paragraph).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/selkamand/vcf2mafR}
+  \item Report bugs at \url{https://github.com/selkamand/vcf2mafR/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Sam El-Kamand \email{selkamand@ccia.org.au} (\href{https://orcid.org/0000-0003-2270-8088}{ORCID})
 
