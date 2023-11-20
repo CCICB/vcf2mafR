@@ -3,6 +3,7 @@
 export(choose_a_single_transcript_and_consequence)
 export(df2maf)
 export(vcf2df)
+export(vcf2maf)
 export(vep_rank_biotypes)
 export(vep_rank_consequences)
 importFrom(data.table,":=")

@@ -10,11 +10,12 @@ vcf2df(
   normal_id = "NORMAL",
   vcf_tumor_id = tumor_id,
   vcf_normal_id = normal_id,
-  debug_mode = FALSE
+  debug_mode = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
-\item{vcf}{path to a VCF file}
+\item{vcf}{path to a VEP-annotated VCF file}
 
 \item{tumor_id}{desired value of Tumor_Sample_Barcode in maf (string)}
 
@@ -23,12 +24,22 @@ vcf2df(
 \item{vcf_tumor_id}{the sample ID describing the tumor in the (string)}
 
 \item{vcf_normal_id}{the sample ID describing the normal in the (string)}
+
+\item{verbose}{(flag)}
 }
 \value{
 data.frame
 }
 \description{
-Expects a vepped VCF. There are a couple of different types of inputs we supp
+Expects a vepped VCF. VEP must be run with a couple of options:
+\enumerate{
+\item Identifiers: Gene symbol & Transcript Version & (HGVS: optional)
+\item Transcript annotation: Transcript biotype & 'Identify canonical transcripts'
+\item (Optional) If using the commandline version of vep also make sure to use --total_length (helps in transcript choice)
+}
+}
+\details{
+There are a couple of different types of inputs we supp
 }
 \examples{
 path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_grch38.vep.vcf")

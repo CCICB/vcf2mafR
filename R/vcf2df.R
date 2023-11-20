@@ -9,36 +9,47 @@
 #'
 #' There are a couple of different types of inputs we supp
 #'
-#' @param vcf path to a VCF file
+#' @param vcf path to a VEP-annotated VCF file
 #' @param tumor_id desired value of Tumor_Sample_Barcode in maf (string)
 #' @param normal_id desired value of Matched_Norm_Sample_Barcode in maf (string)
 #' @param vcf_tumor_id the sample ID describing the tumor in the (string)
 #' @param vcf_normal_id the sample ID describing the normal in the (string)
-#'
+#' @param verbose (flag)
 #' @return data.frame
 #' @export
 #'
 #' @examples
 #' path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_grch38.vep.vcf")
 #' vcf2df(path_vcf)
-vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, debug_mode = FALSE) {
+vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, debug_mode = FALSE, verbose = TRUE) {
+
+  # Assertions
+  assertions::assert_string(vcf)
+  assertions::assert_file_exists(vcf)
+  assertions::assert_string(tumor_id)
+  assertions::assert_string(normal_id)
+  assertions::assert_string(vcf_tumor_id)
+  assertions::assert_string(vcf_normal_id)
+  assertions::assert_flag(debug_mode)
+  assertions::assert_flag(verbose)
+
 
   # Read VCF
-  cli::cli_h1(text = "Reading VCF")
+  if(verbose) cli::cli_h1(text = "Reading VCF")
   vcfR <- vcfR::read.vcfR(vcf, verbose = FALSE) # May need to increase default limit
-  cli::cli_alert_success("VCF successfully read")
+  if(verbose) cli::cli_alert_success("VCF successfully read")
 
   # Test VCF is vep-annotated
-  cli::cli_h1("Checking VCF is VEP-annotated")
+  if(verbose) cli::cli_h1("Checking VCF is VEP-annotated")
   vep_in_meta <- any(grepl(x = vcfR@meta, pattern = "^##VEP="))
 
-  cli::cli_progress_step(msg = "Looking for ##VEP entry in VCF header")
+  if(verbose) cli::cli_progress_step(msg = "Looking for ##VEP entry in VCF header")
   assertions::assert(
     vep_in_meta,
     msg = "Failed to find VEP annotation step in VCF header (##VEP). Are you sure the VCF is VEP-annotated?"
   )
 
-  cli::cli_progress_step(msg = "Checking at least some of our entries have CSQ field in INFO column")
+  if(verbose) cli::cli_progress_step(msg = "Checking at least some of our entries have CSQ field in INFO column")
   vep_csq <- vcfR::extract.info(x = vcfR, element = "CSQ")
   csq_info_field_present <- !all(is.na(vep_csq))
 
@@ -50,8 +61,8 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
 
 
   # Convert to data.frame
-  cli::cli_h1("Converting VCF to data.frame")
-  cli::cli_progress_step("Converting to dataframe")
+  if(verbose)  cli::cli_h1("Converting VCF to data.frame")
+  if(verbose)  cli::cli_progress_step("Converting to dataframe")
 
   ls_tidy_vcf <- vcfR::vcfR2tidy(vcfR, single_frame = TRUE, verbose = FALSE)
   if (debug_mode) {
@@ -199,14 +210,30 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
 }
 
 
-vcf2maf <- function(vcf, ref_genome, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, debug_mode = FALSE){
+#' VCF to MAF
+#'
+#' Convert a vep-annotated VCF file to a MAF-compatible data.frame
+#'
+#' @inheritParams vcf2df
+#' @inheritParams df2maf
+#'
+#' @return a maf compatible data.frame
+#' @export
+#'
+#' @examples
+#' path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
+#' vcf2df(vcf = path_vcf_vepped)
+#'
+
+vcf2maf <- function(vcf, ref_genome, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, verbose = TRUE, debug_mode = FALSE){
   df <- vcf2df(
     vcf = vcf,
     tumor_id = tumor_id,
     normal_id = normal_id,
     vcf_tumor_id = vcf_tumor_id,
     vcf_normal_id = vcf_normal_id,
-    debug_mode = debug_mode
+    debug_mode = debug_mode,
+    verbose = verbose
   )
   #browser()
 

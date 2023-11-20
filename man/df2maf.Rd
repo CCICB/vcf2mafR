@@ -10,7 +10,7 @@ df2maf(
   keep_all = TRUE,
   col_chrom = "chr",
   col_pos = "pos",
-  col_sample_identifier = "sample_id",
+  col_sample_identifier = "sample",
   col_ref = "ref",
   col_alt = "alt",
   col_consequence = "consequence",

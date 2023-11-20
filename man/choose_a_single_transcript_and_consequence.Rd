@@ -4,7 +4,7 @@
 \alias{choose_a_single_transcript_and_consequence}
 \title{Take}
 \usage{
-choose_a_single_transcript_and_consequence(biotypes, consequence, cdna)
+choose_a_single_transcript_and_consequence(biotypes, consequences, cdna)
 }
 \arguments{
 \item{biotypes}{transcript biotype (e.g. ) (character)}
@@ -12,6 +12,8 @@ choose_a_single_transcript_and_consequence(biotypes, consequence, cdna)
 \item{cdna}{}
 
 \item{transcript_id}{(character)}
+
+\item{consequence}{predicted consequence for each transcript. Mmltiple consequences are}
 }
 \description{
 Take
