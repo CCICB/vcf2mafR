@@ -29,28 +29,6 @@ vcf2maf(
 
 \item{vcf_normal_id}{the sample ID describing the normal in the (string)}
 
-\item{...}{
-  Arguments passed on to \code{\link[=df2maf]{df2maf}}
-  \describe{
-    \item{\code{data}}{a data.frame with 1 row per mutation in a cohort (data.frame)}
-    \item{\code{keep_all}}{keep all columns in the original data.frame? (flag). If FALSE, only includes the minimal required columns and any column explicitly mapped using \verb{col_<name>} arguments.}
-    \item{\code{col_chrom}}{name of column describing chromosome of the mutation (string)}
-    \item{\code{col_pos}}{name of column describing the 1-based position of the mutation (string)}
-    \item{\code{col_ref}}{name of column describing the reference allele (string)}
-    \item{\code{col_alt}}{name of column describing the alternate allele (string)}
-    \item{\code{col_sample_identifier}}{name of column describing the sample containing the mutation (string)}
-    \item{\code{col_consequence}}{name of column describing the consequence of the mutation (in SO ontology terms e.g. those that VEP would use) containing the mutation (string)}
-    \item{\code{col_gene}}{name of column containing Hugo_Symbol of the gene affected by the mutation (string)}
-    \item{\code{col_entrez_gene_id}}{name of column containing entrez gene IDs (string)}
-    \item{\code{col_center}}{name of column containing the genome sequencing center reporting the variant (string)}
-    \item{\code{col_dbSNP_rsid}}{name of column describing the dbSNP rsid of the variant, or "novel" if there is no dbSNP record (string)}
-    \item{\code{col_dbSNP_validation_status}}{name of column describing the validation status of the variant. Elements must be one of by1000genomes;by2Hit2Allele; byCluster; byFrequency; byHapMap; byOtherPop; bySubmitter; alternate_allele (string)}
-    \item{\code{col_matched_normal_sample_identifier}}{name of column describing the matched normal sample identifier}
-    \item{\code{col_sequencer}}{name of column describing the instrument used to produce data (string)}
-    \item{\code{col_sequence_source}}{name of column describing the molecular assay type used to produce the analytes used for sequencing (string). Elements are usually one of 'WGS', 'WGA', 'WXS', 'RNA-seq', etc}
-    \item{\code{col_mutation_status}}{name of column describing the mutation status (string). Elements must be one of: None, Germline, Somatic, LOH, Post-transcriptional modification, or Unknown}
-  }}
-
 \item{verbose}{(flag)}
 }
 \value{
@@ -61,6 +39,6 @@ Convert a vep-annotated VCF file to a MAF-compatible data.frame
 }
 \examples{
 path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
-vcf2df(vcf = path_vcf_vepped)
+vcf2maf(vcf = path_vcf_vepped)
 
 }

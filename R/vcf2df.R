@@ -216,14 +216,13 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
 #'
 #' @inheritParams vcf2df
 #' @inheritParams df2maf
-#' @inheritDotParams df2maf
 #'
 #' @return a maf compatible data.frame
 #' @export
 #'
 #' @examples
 #' path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
-#' vcf2df(vcf = path_vcf_vepped)
+#' vcf2maf(vcf = path_vcf_vepped)
 #'
 
 vcf2maf <- function(
