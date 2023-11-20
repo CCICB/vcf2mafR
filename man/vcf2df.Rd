@@ -6,9 +6,11 @@
 \usage{
 vcf2df(
   vcf,
-  tumor_id = "Sample1Tumor",
-  normal_id = "Sample1Normal",
-  debug_mode = TRUE
+  tumor_id = "TUMOR",
+  normal_id = "NORMAL",
+  vcf_tumor_id = tumor_id,
+  vcf_normal_id = normal_id,
+  debug_mode = FALSE
 )
 }
 \arguments{
@@ -17,12 +19,16 @@ vcf2df(
 \item{tumor_id}{desired value of Tumor_Sample_Barcode in maf (string)}
 
 \item{normal_id}{desired value of Matched_Norm_Sample_Barcode in maf (string)}
+
+\item{vcf_tumor_id}{the sample ID describing the tumor in the (string)}
+
+\item{vcf_normal_id}{the sample ID describing the normal in the (string)}
 }
 \value{
 data.frame
 }
 \description{
-Convert a vepped VCF into a table ready to be passed into df2maf
+Expects a vepped VCF. There are a couple of different types of inputs we supp
 }
 \examples{
 path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_grch38.vep.vcf")

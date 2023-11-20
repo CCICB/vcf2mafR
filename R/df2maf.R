@@ -37,26 +37,24 @@
 #' path_mutations <- system.file("pedcbioportal_mutation_annotated.tsv", package = "vcf2mafR")
 #' df_mutations <- read.csv(path_mutations, sep = "\t")
 #' df_maf <- df2maf(df_mutations, ref_genome = "hg38")
-df2maf <- function(
-    data,
-    ref_genome,
-    keep_all = TRUE,
-    col_chrom = "chr",
-    col_pos = "pos" ,
-    col_sample_identifier = "sample_id",
-    col_ref = "ref",
-    col_alt =  "alt",
-    col_consequence = "consequence",
-    col_gene = "gene",
-    col_center = NULL,
-    col_entrez_gene_id = NULL,
-    col_dbSNP_rsid = NULL,
-    col_dbSNP_validation_status = NULL,
-    col_matched_normal_sample_identifier = NULL,
-    col_sequencer = NULL,
-    col_sequence_source = NULL,
-    col_mutation_status = NULL
-    ){
+df2maf <- function(data,
+                   ref_genome,
+                   keep_all = TRUE,
+                   col_chrom = "chr",
+                   col_pos = "pos",
+                   col_sample_identifier = "sample",
+                   col_ref = "ref",
+                   col_alt = "alt",
+                   col_consequence = "consequence",
+                   col_gene = "gene",
+                   col_center = NULL,
+                   col_entrez_gene_id = NULL,
+                   col_dbSNP_rsid = NULL,
+                   col_dbSNP_validation_status = NULL,
+                   col_matched_normal_sample_identifier = NULL,
+                   col_sequencer = NULL,
+                   col_sequence_source = NULL,
+                   col_mutation_status = NULL) {
 
   # Assertions
   assertions::assert_dataframe(data)
@@ -71,7 +69,7 @@ df2maf <- function(
   assertions::assert_string(ref_genome)
   assertions::assert_flag(keep_all)
 
-  old_names <- c(col_chrom, col_pos, col_sample_identifier, col_ref, col_alt, col_consequence,  col_gene)
+  old_names <- c(col_chrom, col_pos, col_sample_identifier, col_ref, col_alt, col_consequence, col_gene)
   new_names <- c("Chromosome", "Position_1based", "Tumor_Sample_Barcode", "Reference_Allele", "Tumor_Seq_Allele2", "Consequence", "Hugo_Symbol")
 
   # Eliminate no visible global binding
@@ -85,9 +83,9 @@ df2maf <- function(
   Inframe <- NULL
 
   # Conditional Assertions --------------------------------------------------
-  #TODO: add content assertion for fields like Sequence_Source which have restricted language
+  # TODO: add content assertion for fields like Sequence_Source which have restricted language
   # Center
-  if(!is.null(col_center)){
+  if (!is.null(col_center)) {
     assertions::assert_string(col_center)
     assertions::assert_names_include(data, col_center)
     old_names <- c(old_names, col_center)
@@ -95,7 +93,7 @@ df2maf <- function(
   }
 
   # Sequencer
-  if(!is.null(col_sequencer)){
+  if (!is.null(col_sequencer)) {
     assertions::assert_string(col_sequencer)
     assertions::assert_names_include(data, col_sequencer)
     old_names <- c(old_names, col_sequencer)
@@ -103,7 +101,7 @@ df2maf <- function(
   }
 
   # Matched_Norm_Sample_Barcode
-  if(!is.null(col_matched_normal_sample_identifier)){
+  if (!is.null(col_matched_normal_sample_identifier)) {
     assertions::assert_string(col_matched_normal_sample_identifier)
     assertions::assert_names_include(data, col_matched_normal_sample_identifier)
     old_names <- c(old_names, col_matched_normal_sample_identifier)
@@ -111,7 +109,7 @@ df2maf <- function(
   }
 
   # dbSNP_RS
-  if(!is.null(col_dbSNP_rsid)){
+  if (!is.null(col_dbSNP_rsid)) {
     assertions::assert_string(col_dbSNP_rsid)
     assertions::assert_names_include(data, col_dbSNP_rsid)
     old_names <- c(old_names, col_dbSNP_rsid)
@@ -119,7 +117,7 @@ df2maf <- function(
   }
 
   # dbSNP_Val_Status
-  if(!is.null(col_dbSNP_validation_status)){
+  if (!is.null(col_dbSNP_validation_status)) {
     assertions::assert_string(col_dbSNP_validation_status)
     assertions::assert_names_include(data, col_dbSNP_validation_status)
     old_names <- c(old_names, col_dbSNP_validation_status)
@@ -127,7 +125,7 @@ df2maf <- function(
   }
 
   # Entrez_Gene_Id
-  if(!is.null(col_entrez_gene_id)){
+  if (!is.null(col_entrez_gene_id)) {
     assertions::assert_string(col_entrez_gene_id)
     assertions::assert_names_include(data, col_entrez_gene_id)
     old_names <- c(old_names, col_entrez_gene_id)
@@ -135,13 +133,15 @@ df2maf <- function(
   }
 
   # Sequence_Source
-  if(!is.null(col_sequence_source)){
-    valid_sequence_sources <- c("WGS", "WGA", "WXS", "RNA-Seq", "miRNA-Seq", "Bisulfite-Seq",
-                                "VALIDATION", "Other", "ncRNA-Seq", "WCS", "CLONE", "POOLCLONE",
-                                "AMPLICON", "CLONEEND", "FINISHING", "ChIP-Seq", "MNase-Seq",
-                                "DNase-Hypersensitivity", "EST", "FL-cDNA", "CTS", "MRE-Seq",
-                                "MeDIP-Seq", "MBD-Seq", "Tn-Seq", "FAIRE-seq", "SELEX", "RIP-Seq",
-                                "ChIA-PET")
+  if (!is.null(col_sequence_source)) {
+    valid_sequence_sources <- c(
+      "WGS", "WGA", "WXS", "RNA-Seq", "miRNA-Seq", "Bisulfite-Seq",
+      "VALIDATION", "Other", "ncRNA-Seq", "WCS", "CLONE", "POOLCLONE",
+      "AMPLICON", "CLONEEND", "FINISHING", "ChIP-Seq", "MNase-Seq",
+      "DNase-Hypersensitivity", "EST", "FL-cDNA", "CTS", "MRE-Seq",
+      "MeDIP-Seq", "MBD-Seq", "Tn-Seq", "FAIRE-seq", "SELEX", "RIP-Seq",
+      "ChIA-PET"
+    )
 
     assertions::assert_string(col_sequence_source)
     assertions::assert_names_include(data, col_sequence_source)
@@ -151,7 +151,7 @@ df2maf <- function(
     new_names <- c(new_names, "Sequence_Source")
   }
 
-  if(!is.null(col_mutation_status)){
+  if (!is.null(col_mutation_status)) {
     valid_mutation_statuses <- c("None", "Germline", "Somatic", "LOH", "Post-transcriptional modification", "Unknown")
     assertions::assert_string(col_mutation_status)
     assertions::assert_names_include(data, col_mutation_status)
@@ -165,7 +165,7 @@ df2maf <- function(
   # Create Data.Table
   dt_maf <- data.table::data.table(data)
 
-  #Rename Columns
+  # Rename Columns
   data.table::setnames(
     dt_maf,
     old = old_names,
@@ -175,19 +175,19 @@ df2maf <- function(
   # Rename optional columns
 
   # Calculate Ref and Alt lengths
-  dt_maf[,"Ref_Length" := nchar(Reference_Allele)]
-  dt_maf[,"Alt_Length" := nchar(Tumor_Seq_Allele2)]
+  dt_maf[, "Ref_Length" := nchar(Reference_Allele)]
+  dt_maf[, "Alt_Length" := nchar(Tumor_Seq_Allele2)]
 
   # Standardise Ref and Alt allele representations, and fix Lengths & Positions
-  df_fixed <-  fix_alleles(ref = dt_maf[["Reference_Allele"]], alt = dt_maf[["Tumor_Seq_Allele2"]])
-  dt_maf[,"Ref_Length" := Ref_Length - df_fixed[["numdropped"]]]
-  dt_maf[,"Alt_Length" := Alt_Length - df_fixed[["numdropped"]]]
-  dt_maf[,"Position_1based" := Position_1based + df_fixed[["numdropped"]]]
-  dt_maf[,"Reference_Allele" := df_fixed[["ref"]]]
-  dt_maf[,"Tumor_Seq_Allele2" := df_fixed[["alt"]]]
+  df_fixed <- fix_alleles(ref = dt_maf[["Reference_Allele"]], alt = dt_maf[["Tumor_Seq_Allele2"]])
+  dt_maf[, "Ref_Length" := Ref_Length - df_fixed[["numdropped"]]]
+  dt_maf[, "Alt_Length" := Alt_Length - df_fixed[["numdropped"]]]
+  dt_maf[, "Position_1based" := Position_1based + df_fixed[["numdropped"]]]
+  dt_maf[, "Reference_Allele" := df_fixed[["ref"]]]
+  dt_maf[, "Tumor_Seq_Allele2" := df_fixed[["alt"]]]
 
   # Calculate Start_Position, End_Position, Variant_Types and Inframe status
-  dt_maf[,"Start_Position" := data.table::fcase(
+  dt_maf[, "Start_Position" := data.table::fcase(
     # SNPs
     Ref_Length == Alt_Length, Position_1based,
     # Insertions (potentially with '-' Reference Alleles)
@@ -195,8 +195,8 @@ df2maf <- function(
     # Deletions
     Ref_Length > Alt_Length, Position_1based,
     TRUE, stop("non-explicitly handled mutation type")
-    )]
-  dt_maf[,"End_Position" := data.table::fcase(
+  )]
+  dt_maf[, "End_Position" := data.table::fcase(
     # SNPs
     Ref_Length == Alt_Length, Position_1based + Alt_Length - 1,
     # Insertions (potentially with '-' Reference Alleles)
@@ -205,12 +205,12 @@ df2maf <- function(
     Ref_Length > Alt_Length, Position_1based + Ref_Length - 1,
     TRUE, stop("non-explicitly handled mutation type")
   )]
-  dt_maf[,"Inframe" := data.table::fcase(
+  dt_maf[, "Inframe" := data.table::fcase(
     Ref_Length == Alt_Length, TRUE,
     abs(Ref_Length - Alt_Length) %% 3 == 0, TRUE,
     default = FALSE
-    )]
-  dt_maf[,"Variant_Type" := data.table::fcase(
+  )]
+  dt_maf[, "Variant_Type" := data.table::fcase(
     # SNPs
     Ref_Length == Alt_Length & Alt_Length == 1, "SNP",
     Ref_Length == Alt_Length & Alt_Length == 2, "DNP",
@@ -231,19 +231,18 @@ df2maf <- function(
   # Add reference genome
   dt_maf[, "NCBI_Build" := ref_genome]
 
-  if(!keep_all){
-   #cli::cli_alert_info("Dropping all non-essential columns without explicit mapping")
+  if (!keep_all) {
+    # cli::cli_alert_info("Dropping all non-essential columns without explicit mapping")
     colnames <- c(new_names, "NCBI_Build", "Start_Position", "End_Position", "Variant_Classification", "Variant_Type", "Inframe")
     colnames <- colnames[colnames != "Position_1based"]
-    dt_maf <- dt_maf[, colnames, with=FALSE]
+    dt_maf <- dt_maf[, colnames, with = FALSE]
   }
 
   # Return
   return(dt_maf)
-
 }
 
-#Changing Ref:
+# Changing Ref:
 # While the first Char of Reference_Allele and Tumor_Seq_Allele2 are the same, and both are non-empty
 # go char by char and if the first char of Ref and Alt are the same, drop them. If empty - replace with a '-'
 # Each time you drop a char, add 1 to Position_1based, and decrease 1 from --$ref_length; --$var_length;
@@ -253,12 +252,12 @@ fix_alleles_scalar <- function(ref, alt) {
   assertions::assert_string(ref)
   assertions::assert_string(alt)
 
-  numdropped = 0
-  while(nchar(ref) != 0 & nchar(alt) != 0 & substr(ref, 1, 1) == substr(alt, 1, 1) & ref != alt){
+  numdropped <- 0
+  while (nchar(ref) != 0 & nchar(alt) != 0 & substr(ref, 1, 1) == substr(alt, 1, 1) & ref != alt) {
     ref <- substr(ref, 2, nchar(ref))
     alt <- substr(alt, 2, nchar(alt))
-    if(nchar(ref) == 0) ref <- "-"
-    if(nchar(alt) == 0) alt <- "-"
+    if (nchar(ref) == 0) ref <- "-"
+    if (nchar(alt) == 0) alt <- "-"
     numdropped <- numdropped + 1
   }
 
@@ -270,7 +269,7 @@ fix_alleles_scalar <- function(ref, alt) {
 # 'alt': new alt allele
 # 'numdropped': number of chars dropped from the start of reference/alt.
 # numdropped should be subtracted from Ref_Length & Alt_Length and added to Pos
-fix_alleles <- function(ref, alt){
+fix_alleles <- function(ref, alt) {
   assertions::assert_equal(length(ref), length(alt))
 
   ls_fixed_alleles <- lapply(seq_along(ref), FUN = function(i) {
@@ -283,9 +282,9 @@ fix_alleles <- function(ref, alt){
   df <- as.data.frame(do.call(rbind, ls_fixed_alleles), stringsAsFactors = FALSE)
 
   # Remove unnecessary list-ing of dataframe columns
-  for (col in colnames(df)){ df[[col]] <- unlist(df[[col]]) }
+  for (col in colnames(df)) {
+    df[[col]] <- unlist(df[[col]])
+  }
 
   return(df)
 }
-
-
