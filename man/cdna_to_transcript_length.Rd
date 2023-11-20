@@ -9,6 +9,9 @@ cdna_to_transcript_length(cdna)
 \arguments{
 \item{cdna}{vector representing cDNA_position VEP annotations.}
 }
+\value{
+numeric transcript length passed from VEP cDNA_position
+}
 \description{
 This function just pulls out digits from the cDNA_position column.
 Note transcript length isn't encoded into cDNA position column UNLESS --total_length flag is on when running vep (turns format into cdna_position/total_length)

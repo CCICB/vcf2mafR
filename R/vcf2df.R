@@ -216,6 +216,7 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
 #'
 #' @inheritParams vcf2df
 #' @inheritParams df2maf
+#' @inheritDotParams df2maf
 #'
 #' @return a maf compatible data.frame
 #' @export
@@ -225,7 +226,8 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
 #' vcf2df(vcf = path_vcf_vepped)
 #'
 
-vcf2maf <- function(vcf, ref_genome, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, verbose = TRUE, debug_mode = FALSE){
+vcf2maf <- function(
+    vcf, ref_genome, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, ... ,verbose = TRUE, debug_mode = FALSE){
   df <- vcf2df(
     vcf = vcf,
     tumor_id = tumor_id,

@@ -5,39 +5,6 @@ strsplit2 <- function(x, split, fixed = FALSE){
 }
 
 
-#' Take
-#'
-#' @param transcript_id (character)
-#' @param biotypes transcript biotype (e.g. ) (character)
-#' @param consequence predicted consequence for each transcript. Mmltiple consequences are
-#' @param cdna
-#'
-#' @return
-#' @export
-#'
-#' @examples
-choose_a_single_transcript_and_consequence <- function(biotypes, consequences, cdna){
-
-  transcript_lengths = cdna_to_transcript_length(cdna)
-  biotype_priority = vep_rank_biotypes(biotypes)
-  csq_priority = vep_rank_consequences(consequences)
-
-  df = data.frame(
-    "biotype_priority"=biotype_priority,
-    "csq_priority" = csq_priority,
-    "transcript_length" = transcript_lengths,
-    "csq" = consequences,
-    "biotype" = biotypes,
-    "cDNA_position" = cdna
-  )
-
-  dplyr::arrange(df, biotype_priority, csq_priority, dplyr::desc(transcript_lengths)) |>
-    dplyr::mutate(rank = seq_len(dplyr::n())) |>
-    dplyr::slice_head(n=1)
-
-  browser()
-}
-
 which.min.all <- function(x){
   which(x == min(x))
 }
@@ -51,7 +18,7 @@ which.min.all <- function(x){
 #'
 #' @param cdna vector representing cDNA_position VEP annotations.
 #'
-#' @return
+#' @return numeric transcript length passed from VEP cDNA_position
 #'
 cdna_to_transcript_length <- function(cdna){
   res <- stringr::str_extract(cdna, "\\/(\\d+)", group = TRUE)
