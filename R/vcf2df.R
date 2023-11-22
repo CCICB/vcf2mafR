@@ -15,6 +15,7 @@
 #' @param vcf_tumor_id the sample ID describing the tumor in the (string)
 #' @param vcf_normal_id the sample ID describing the normal in the (string)
 #' @param verbose (flag)
+#' @param debug_mode run in debug mode (flag)
 #' @return data.frame
 #' @export
 #'
@@ -165,7 +166,7 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
     maf_gene = df |>
       dplyr::filter(has_gene_symbol) |>
       dplyr::pull(SYMBOL) |>
-      head(n=1)
+      utils::head(n=1)
 
     # === Step 1: Choose which gene transcript to use === #
 
@@ -176,7 +177,7 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
     maf_effect <- df |>
       dplyr::filter(.data[["SYMBOL"]] == maf_gene, .data[["CANONICAL"]] == TRUE) |>
       dplyr::pull(Consequence) |>
-      head(n=1)
+      utils::head(n=1)
 
     # If that gene has no VEP-preferred isoform either, then choose the worst affected user-preferred isoform with a gene symbol
     # <not implemented yet>
@@ -265,6 +266,7 @@ vcf2maf <- function(
 #' @param vcfs path to vcf files (character)
 #' @inheritParams paths_to_sample_names
 #' @inheritParams vcf2maf
+#' @param parse_tumor_id_from_filename should tumour id be parsed from filename (flag)
 #' @param vcf_tumor_id a vector describing what the tumor_names to expect in a VCF are
 #' @return a maf-compatible data.frame
 #' @export
@@ -318,7 +320,6 @@ vcfs2maf <- function(vcfs, ref_genome, vcf_tumor_id="TUMOR", vcf_normal_id="NORM
 #'
 #' @param filenames paths to vcf files
 #' @param extract what text do we extract as sample name. See details
-#' @param sep_is_regex
 #'
 #' @return sample names extracted from filename (character)
 #' @export

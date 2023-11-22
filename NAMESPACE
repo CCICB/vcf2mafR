@@ -2,6 +2,7 @@
 
 export(df2maf)
 export(paths_to_sample_names)
+export(valid_maf_columns)
 export(vcf2df)
 export(vcf2maf)
 export(vcfs2maf)

@@ -36,7 +36,7 @@
 #' @examples
 #' path_mutations <- system.file("pedcbioportal_mutation_annotated.tsv", package = "vcf2mafR")
 #' df_mutations <- read.csv(path_mutations, sep = "\t")
-#' df_maf <- df2maf(df_mutations, ref_genome = "hg38")
+#' df_maf <- df2maf(df_mutations, ref_genome = "hg38", col_sample = "sample_id")
 df2maf <- function(data,
                    ref_genome,
                    keep_all = TRUE,
@@ -256,8 +256,9 @@ df2maf <- function(data,
 
 # Need to add info about alleles
 fix_alleles_scalar <- function(ref, alt) {
-  assertions::assert_string(ref)
-  assertions::assert_string(alt)
+  # Assert both scalar: had to comment out because was taking too much time
+  #assertions::assert_string(ref)
+  #assertions::assert_string(alt)
 
   numdropped <- 0
   while (nchar(ref) != 0 & nchar(alt) != 0 & substr(ref, 1, 1) == substr(alt, 1, 1) & ref != alt) {
@@ -302,6 +303,8 @@ fix_alleles <- function(ref, alt) {
 #' List all valid MAF columns based on GDC specification
 #'
 #' @return Names of each  GDC MAF column in the order they appear (character)
+#'
+#' @export
 #'
 #' @examples
 #' valid_maf_columns()

@@ -18,7 +18,11 @@ Imports:
     assertions (>= 0.0.0.9000),
     cli,
     data.table,
+    dplyr,
     mutationtypes (>= 0.0.0.9000),
+    rlang,
+    stringr,
+    tibble,
     vcfR
 Remotes: 
     selkamand/assertions,

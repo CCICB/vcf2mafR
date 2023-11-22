@@ -29,6 +29,8 @@ vcf2maf(
 \item{vcf_normal_id}{the sample ID describing the normal in the (string)}
 
 \item{verbose}{(flag)}
+
+\item{debug_mode}{run in debug mode (flag)}
 }
 \value{
 a maf compatible data.frame

@@ -23,6 +23,8 @@ vcfs2maf(
 
 \item{vcf_normal_id}{the sample ID describing the normal in the (string)}
 
+\item{parse_tumor_id_from_filename}{should tumour id be parsed from filename (flag)}
+
 \item{extract}{what text do we extract as sample name. See details}
 
 \item{verbose}{(flag)}

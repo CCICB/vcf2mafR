@@ -25,6 +25,8 @@ vcf2df(
 
 \item{vcf_normal_id}{the sample ID describing the normal in the (string)}
 
+\item{debug_mode}{run in debug mode (flag)}
+
 \item{verbose}{(flag)}
 }
 \value{

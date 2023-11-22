@@ -13,8 +13,6 @@ paths_to_sample_names(
 \item{filenames}{paths to vcf files}
 
 \item{extract}{what text do we extract as sample name. See details}
-
-\item{sep_is_regex}{}
 }
 \value{
 sample names extracted from filename (character)

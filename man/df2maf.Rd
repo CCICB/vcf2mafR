@@ -84,5 +84,5 @@ Alternate column names can be used, but require \strong{col_chrom}, \strong{col_
 \examples{
 path_mutations <- system.file("pedcbioportal_mutation_annotated.tsv", package = "vcf2mafR")
 df_mutations <- read.csv(path_mutations, sep = "\t")
-df_maf <- df2maf(df_mutations, ref_genome = "hg38")
+df_maf <- df2maf(df_mutations, ref_genome = "hg38", col_sample = "sample_id")
 }
