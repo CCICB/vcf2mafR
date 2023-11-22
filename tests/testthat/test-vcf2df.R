@@ -23,3 +23,13 @@ test_that("vcf2df works", {
   # Snapshot test
   expect_snapshot(df)
 })
+
+test_that("vcfs2maf works", {
+
+  # Setup
+  vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'))
+
+  # Works without error on valid inputs
+  expect_error(vcfs2maf(vcf_filepaths, verbose = FALSE))
+
+})

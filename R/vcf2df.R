@@ -10,8 +10,8 @@
 #' There are a couple of different types of inputs we supp
 #'
 #' @param vcf path to a VEP-annotated VCF file
-#' @param tumor_id desired value of Tumor_Sample_Barcode in maf (string)
-#' @param normal_id desired value of Matched_Norm_Sample_Barcode in maf (string)
+#' @param tumor_id desired value of Tumor_Sample_Barcode in maf. By default will use the name of the tumor sample in the VCF (string)
+#' @param normal_id desired value of Matched_Norm_Sample_Barcode in maf.  By default will use the name of the normal sample in the VCF (string)
 #' @param vcf_tumor_id the sample ID describing the tumor in the (string)
 #' @param vcf_normal_id the sample ID describing the normal in the (string)
 #' @param verbose (flag)
@@ -21,7 +21,7 @@
 #' @examples
 #' path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_grch38.vep.vcf")
 #' vcf2df(path_vcf)
-vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, debug_mode = FALSE, verbose = TRUE) {
+vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", debug_mode = FALSE, verbose = TRUE) {
 
   # Assertions
   assertions::assert_string(vcf)
@@ -57,8 +57,6 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
     csq_info_field_present,
     msg = "Could not find CSQ field in INFO column of VCF. Are you sure the VCF is VEP-annotated?" # May need to extend to allow ANN fields from older VEP versions
   )
-
-
 
   # Convert to data.frame
   if(verbose)  cli::cli_h1("Converting VCF to data.frame")
@@ -226,7 +224,7 @@ vcf2df <- function(vcf, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id =
 #'
 
 vcf2maf <- function(
-    vcf, ref_genome, tumor_id = "TUMOR", normal_id = "NORMAL", vcf_tumor_id = tumor_id, vcf_normal_id = normal_id, ... ,verbose = TRUE, debug_mode = FALSE){
+    vcf, ref_genome, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL" ,verbose = TRUE, debug_mode = FALSE){
   df <- vcf2df(
     vcf = vcf,
     tumor_id = tumor_id,
@@ -236,7 +234,6 @@ vcf2maf <- function(
     debug_mode = debug_mode,
     verbose = verbose
   )
-  #browser()
 
   df2maf(
     data = df,
@@ -258,6 +255,104 @@ vcf2maf <- function(
     col_sequence_source = NULL,
     col_mutation_status = NULL
   )
+}
+
+
+#' Convert several VCF files into a cohort-level MAF
+#'
+#' Take multiple VCF files, each representing a single tumour-normal file and combine into one big maf
+#'
+#' @param vcfs path to vcf files (character)
+#' @inheritParams paths_to_sample_names
+#' @inheritParams vcf2maf
+#' @param vcf_tumor_id a vector describing what the tumor_names to expect in a VCF are
+#' @return a maf-compatible data.frame
+#' @export
+#'
+#' @examples
+#' vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
+#' vcfs2maf(vcf_filepaths)
+vcfs2maf <- function(vcfs, ref_genome, vcf_tumor_id="TUMOR", vcf_normal_id="NORMAL", parse_tumor_id_from_filename = TRUE, extract = c('before_dot', 'before_underscore'), verbose = TRUE){
+
+  # Assertions
+  assertions::assert_greater_than(length(vcfs), minimum = 0)
+  assertions::assert_all_files_exist(vcfs)
+  rlang::check_required(ref_genome)
+
+  # (Optionally) Parse Out Sample Names
+  if(parse_tumor_id_from_filename)
+    sample_names <- paths_to_sample_names(vcfs)
+  else
+    sample_names <- NULL
+
+  df = data.frame(
+    vcfs = vcfs,
+    sample = sample_names
+  )
+
+  # Convert Each VCF to a maf-like data.frame
+  ls_maf_dataframes = lapply(
+    seq_len(nrow(df)),
+    function(i){
+      vcf_ <- df[['vcfs']][i]
+      sample_ <- df[['sample']][i]
+
+      vcf2maf(
+        vcf = vcf_,
+        ref_genome = ref_genome,
+        tumor_id = sample_,
+        vcf_tumor_id = vcf_tumor_id,
+        vcf_normal_id = vcf_normal_id,
+        verbose = verbose
+        )
+    }
+    )
+
+  df_merged <- do.call("rbind", ls_maf_dataframes)
+
+  return(df_merged)
+}
+
+
+#' Extract Sample Names From VCF filepath
+#'
+#' @param filenames paths to vcf files
+#' @param extract what text do we extract as sample name. See details
+#' @param sep_is_regex
+#'
+#' @return sample names extracted from filename (character)
+#' @export
+#'
+#' @examples
+#' path <- "/path/to/sample_name.otherinfo.vcf"
+#' paths_to_sample_names(path)
+#'
+#' @details
+#'
+#' | Extraction | Explanation |
+#' | --- | --- |
+#' | before_dot | \strong{sample_name}.otherinfo.vcf |
+#' | before_underscore | \strong{samplename}_other_info.vcf |
+#'
+#'
+paths_to_sample_names <- function(filenames, extract = c('before_dot', 'before_underscore')){
+
+  extract <- rlang::arg_match(extract)
+  assertions::assert_no_missing(filenames)
+
+
+  regex_options = c(
+    'before_dot' = '\\..*$',
+    'before_underscore' = '\\_.*$'
+  )
+  assertions::assert_subset(extract, names(regex_options))
+  regex = regex_options[names(regex_options) == extract][1]
+
+  filenames <- basename(filenames)
+
+  samplenames <- sub(x = filenames, pattern = regex, replacement = "", perl = TRUE)
+
+  return(samplenames)
 }
 
 

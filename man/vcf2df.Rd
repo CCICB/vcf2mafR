@@ -6,10 +6,10 @@
 \usage{
 vcf2df(
   vcf,
-  tumor_id = "TUMOR",
-  normal_id = "NORMAL",
-  vcf_tumor_id = tumor_id,
-  vcf_normal_id = normal_id,
+  tumor_id = vcf_tumor_id,
+  normal_id = vcf_normal_id,
+  vcf_tumor_id = "TUMOR",
+  vcf_normal_id = "NORMAL",
   debug_mode = FALSE,
   verbose = TRUE
 )
@@ -17,9 +17,9 @@ vcf2df(
 \arguments{
 \item{vcf}{path to a VEP-annotated VCF file}
 
-\item{tumor_id}{desired value of Tumor_Sample_Barcode in maf (string)}
+\item{tumor_id}{desired value of Tumor_Sample_Barcode in maf. By default will use the name of the tumor sample in the VCF (string)}
 
-\item{normal_id}{desired value of Matched_Norm_Sample_Barcode in maf (string)}
+\item{normal_id}{desired value of Matched_Norm_Sample_Barcode in maf.  By default will use the name of the normal sample in the VCF (string)}
 
 \item{vcf_tumor_id}{the sample ID describing the tumor in the (string)}
 
