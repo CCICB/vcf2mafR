@@ -27,10 +27,15 @@ test_that("vcf2df works", {
 test_that("vcfs2maf works", {
 
   # Setup
-  vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'))
+  vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
 
   # Works without error on valid inputs
-  expect_error(vcfs2maf(vcf_filepaths, verbose = FALSE))
+  expect_error(vcfs2maf(vcf_filepaths, ref_genome = "hg38", verbose = FALSE), NA)
 
+  # Throws Error If Generic VCF sample names from different VCFs are at risk of being lumped into the same 'sample' in the MAF
+  expect_error(vcfs2maf(vcfs = vcf_filepaths, parse_tumor_id_from_filename = FALSE, ref_genome = "hg38"), "ound duplicated")
+
+  # (Same as above but due to duplicated filenames)
+  expect_error(vcfs2maf(vcfs = c(vcf_filepaths, vcf_filepaths[1]), parse_tumor_id_from_filename = TRUE, ref_genome = "hg38"), "Attempt to parse sample")
 
 })

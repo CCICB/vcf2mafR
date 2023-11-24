@@ -274,18 +274,33 @@ vcf2maf <- function(
 #' @examples
 #' vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
 #' vcfs2maf(vcf_filepaths, ref_genome = "b38")
-vcfs2maf <- function(vcfs, ref_genome, vcf_tumor_id="TUMOR", vcf_normal_id="NORMAL", parse_tumor_id_from_filename = TRUE, extract = c('before_dot', 'before_underscore'), verbose = TRUE){
+vcfs2maf <- function(vcfs, ref_genome, tumor_id=rep(vcf_tumor_id, times = length(vcfs)), vcf_tumor_id="TUMOR", vcf_normal_id="NORMAL", parse_tumor_id_from_filename = TRUE, extract = c('before_dot', 'before_underscore'), verbose = TRUE){
 
   # Assertions
   assertions::assert_greater_than(length(vcfs), minimum = 0)
   assertions::assert_all_files_exist(vcfs)
+  assertions::assert(length(tumor_id) == length(vcfs), msg = "{.arg tumor_id} must include 1 tumour name per VCF file you supply")
   rlang::check_required(ref_genome)
 
   # (Optionally) Parse Out Sample Names
-  if(parse_tumor_id_from_filename)
+  if(parse_tumor_id_from_filename){
     sample_names <- paths_to_sample_names(vcfs)
-  else
-    sample_names <- NULL
+    dups <- sample_names[duplicated(sample_names)]
+    assertions::assert_no_duplicates(
+      sample_names,
+      msg = "Attempt to parse sample names from filenames leads to non-unique mapping of files to samples. Duplicated samples: [{dups}].
+      Fix by either manually supplying a unique tumor_id for each file using the {.arg tumor_id} argument, or modify filenames to the format <unique_sample_name>.<otherinfo>.vcf")
+  }
+  else{
+    # If user is not parsing sample names out - just use tumor_id
+    sample_names <- tumor_id
+    dups <- sample_names[duplicated(sample_names)]
+    assertions::assert_no_duplicates(
+      sample_names,
+      msg = "Found duplicated tumor_ids [{dups}] ,which is not allowed. Current settings will lead to mutations from multiple VCFs with to be allocated to the same {.strong Tumor Sample Barcode}.
+      Fix by either supplying a unique {.arg tumor_id} for each sample manually, or if sample names are encoded into filenames try setting {.arg parse_tumor_id_from_filename} = TRUE")
+  }
+
 
   df = data.frame(
     vcfs = vcfs,
