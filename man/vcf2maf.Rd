@@ -40,6 +40,6 @@ Convert a vep-annotated VCF file to a MAF-compatible data.frame
 }
 \examples{
 path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
-vcf2maf(vcf = path_vcf_vepped)
+vcf2maf(vcf = path_vcf_vepped, ref_genome = "b38")
 
 }

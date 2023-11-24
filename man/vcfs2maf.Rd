@@ -37,5 +37,5 @@ Take multiple VCF files, each representing a single tumour-normal file and combi
 }
 \examples{
 vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
-vcfs2maf(vcf_filepaths)
+vcfs2maf(vcf_filepaths, ref_genome = "b38")
 }

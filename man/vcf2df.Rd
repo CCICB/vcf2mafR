@@ -44,6 +44,6 @@ Expects a vepped VCF. VEP must be run with a couple of options:
 There are a couple of different types of inputs we supp
 }
 \examples{
-path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_grch38.vep.vcf")
+path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_b38.vepgui.vcf")
 vcf2df(path_vcf)
 }

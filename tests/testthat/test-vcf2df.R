@@ -32,4 +32,5 @@ test_that("vcfs2maf works", {
   # Works without error on valid inputs
   expect_error(vcfs2maf(vcf_filepaths, verbose = FALSE))
 
+
 })

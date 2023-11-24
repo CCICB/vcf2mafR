@@ -20,7 +20,7 @@
 #' @export
 #'
 #' @examples
-#' path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_grch38.vep.vcf")
+#' path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_b38.vepgui.vcf")
 #' vcf2df(path_vcf)
 vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", debug_mode = FALSE, verbose = TRUE) {
 
@@ -221,7 +221,7 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
 #'
 #' @examples
 #' path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
-#' vcf2maf(vcf = path_vcf_vepped)
+#' vcf2maf(vcf = path_vcf_vepped, ref_genome = "b38")
 #'
 
 vcf2maf <- function(
@@ -273,7 +273,7 @@ vcf2maf <- function(
 #'
 #' @examples
 #' vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
-#' vcfs2maf(vcf_filepaths)
+#' vcfs2maf(vcf_filepaths, ref_genome = "b38")
 vcfs2maf <- function(vcfs, ref_genome, vcf_tumor_id="TUMOR", vcf_normal_id="NORMAL", parse_tumor_id_from_filename = TRUE, extract = c('before_dot', 'before_underscore'), verbose = TRUE){
 
   # Assertions
