@@ -7,6 +7,7 @@
 vcfs2maf(
   vcfs,
   ref_genome,
+  tumor_id = rep(vcf_tumor_id, times = length(vcfs)),
   vcf_tumor_id = "TUMOR",
   vcf_normal_id = "NORMAL",
   parse_tumor_id_from_filename = TRUE,
@@ -18,6 +19,8 @@ vcfs2maf(
 \item{vcfs}{path to vcf files (character)}
 
 \item{ref_genome}{name of the reference genome used to call variants (string)}
+
+\item{tumor_id}{desired value of Tumor_Sample_Barcode in maf. By default will use the name of the tumor sample in the VCF (string)}
 
 \item{vcf_tumor_id}{a vector describing what the tumor_names to expect in a VCF are}
 
