@@ -34,9 +34,11 @@
 #' @export
 #'
 #' @examples
-#' path_mutations <- system.file("pedcbioportal_mutation_annotated.tsv", package = "vcf2mafR")
+#' path_mutations <- system.file("testfiles/pedcbioportal_mutation_annotated.tsv", package = "vcf2mafR")
+#' if (!file.exists(path_mutations)) stop('Cant find file: ', path_mutations)
 #' df_mutations <- read.csv(path_mutations, sep = "\t")
 #' df_maf <- df2maf(df_mutations, ref_genome = "hg38", col_sample = "sample_id")
+#'
 df2maf <- function(data,
                    ref_genome,
                    keep_all = TRUE,
