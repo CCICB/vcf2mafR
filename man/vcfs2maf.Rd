@@ -7,7 +7,7 @@
 vcfs2maf(
   vcfs,
   ref_genome,
-  tumor_id = rep(vcf_tumor_id, times = length(vcfs)),
+  tumor_id = paste0("Tumor", seq_len(length(vcfs)), times = length(vcfs)),
   vcf_tumor_id = "TUMOR",
   vcf_normal_id = "NORMAL",
   parse_tumor_id_from_filename = TRUE,
