@@ -86,7 +86,11 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
     ))
 
   unexpected_sample_identifiers <- unique(df_vcf[["sample"]][df_vcf[["sample_type"]] == "ERROR"])
-  assertions::assert(length(unexpected_sample_identifiers) == 0, msg = "Your VCFs contain the following sample identifiers: [{unexpected_sample_identifiers}], However the sample identifiers vcf2maf has been configured to accept are [{tumor_id}] (for tumor samples) and [{normal_id}] (for normal samples)")
+  assertions::assert(
+    length(unexpected_sample_identifiers) == 0, msg = "
+    Your VCF/s contain the following sample identifier/s: [{unexpected_sample_identifiers}]. However the sample identifiers vcf2maf has been configured to look for are [{vcf_tumor_id}] (for tumor samples) and [{vcf_normal_id}] (for normal samples).
+    Fix this error by changing {.arg vcf_tumor_id} and {.arg vcf_normal_id} arguments the Tumor / Normal sample identifiers represented in the VCF"
+  )
 
 
 
