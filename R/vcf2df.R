@@ -278,13 +278,32 @@ vcf2maf <- function(
 #' @examples
 #' vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
 #' vcfs2maf(vcf_filepaths, ref_genome = "b38")
-vcfs2maf <- function(vcfs, ref_genome, tumor_id=rep(vcf_tumor_id, times = length(vcfs)), vcf_tumor_id="TUMOR", vcf_normal_id="NORMAL", parse_tumor_id_from_filename = TRUE, extract = c('before_dot', 'before_underscore'), verbose = TRUE){
+vcfs2maf <- function(vcfs, ref_genome, tumor_id=paste0("Tumor", seq_len(length(vcfs)), times = length(vcfs)), vcf_tumor_id="TUMOR", vcf_normal_id="NORMAL", parse_tumor_id_from_filename = TRUE, extract = c('before_dot', 'before_underscore'), verbose = TRUE){
 
   # Assertions
   assertions::assert_greater_than(length(vcfs), minimum = 0)
   assertions::assert_all_files_exist(vcfs)
   assertions::assert(length(tumor_id) == length(vcfs), msg = "{.arg tumor_id} must include 1 tumour name per VCF file you supply")
   rlang::check_required(ref_genome)
+
+  if(length(vcf_tumor_id) == 1)
+    vcf_tumor_id <- rep(vcf_tumor_id, times = length(vcfs))
+  else
+    assertions::assert(
+      length(vcf_tumor_id) == length(vcfs),
+      msg = "Mismatch between length of {.arg vcf_tumor_id} and number of VCFs supplied [{length(vcf_tumor_id)} vs {length(vcfs)}].
+      Either supply one {.arg vcf_tumor_id} (if all vcfs have the same tumor sample name) otherwise supply one per VCF."
+    )
+
+  if(length(vcf_normal_id) == 1)
+    vcf_normal_id <- rep(vcf_normal_id, times = length(vcfs))
+  else
+    assertions::assert(
+      length(vcf_normal_id) == length(vcfs),
+      msg = "Mismatch between length of {.arg vcf_normal_id} and number of VCFs supplied [{length(vcf_normal_id)} vs {length(vcfs)}].
+      Either supply one {.arg vcf_normal_id} (if all vcfs have the same tumor sample name) otherwise supply one per VCF."
+    )
+
 
   # (Optionally) Parse Out Sample Names
   if(parse_tumor_id_from_filename){
@@ -322,8 +341,8 @@ vcfs2maf <- function(vcfs, ref_genome, tumor_id=rep(vcf_tumor_id, times = length
         vcf = vcf_,
         ref_genome = ref_genome,
         tumor_id = sample_,
-        vcf_tumor_id = vcf_tumor_id,
-        vcf_normal_id = vcf_normal_id,
+        vcf_tumor_id = vcf_tumor_id[i],
+        vcf_normal_id = vcf_normal_id[i],
         verbose = verbose
         )
     }

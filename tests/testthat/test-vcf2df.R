@@ -33,9 +33,34 @@ test_that("vcfs2maf works", {
   expect_error(vcfs2maf(vcf_filepaths, ref_genome = "hg38", verbose = FALSE), NA)
 
   # Throws Error If Generic VCF sample names from different VCFs are at risk of being lumped into the same 'sample' in the MAF
-  expect_error(vcfs2maf(vcfs = vcf_filepaths, parse_tumor_id_from_filename = FALSE, ref_genome = "hg38"), "ound duplicated")
+  expect_error(vcfs2maf(vcfs = vcf_filepaths, tumor_id = c('a', 'b', 'c', 'd', 'd'), parse_tumor_id_from_filename = FALSE, ref_genome = "hg38"), "ound duplicated")
 
   # (Same as above but due to duplicated filenames)
   expect_error(vcfs2maf(vcfs = c(vcf_filepaths, vcf_filepaths[1]), parse_tumor_id_from_filename = TRUE, ref_genome = "hg38"), "Attempt to parse sample")
+
+
+  # Works when vcf_tumor_id is manually specified as a vector
+  vcf_tumor_ids <- rep('TUMOR', times=5)
+
+  expect_error(
+    vcfs2maf(
+      vcfs = vcf_filepaths,
+      parse_tumor_id_from_filename = TRUE,
+      vcf_tumor_id = vcf_tumor_ids,
+      ref_genome = "hg38"),
+    regexp = NA
+    )
+
+  expect_error(
+    vcfs2maf(
+      vcfs = vcf_filepaths,
+      parse_tumor_id_from_filename = TRUE,
+      vcf_tumor_id = vcf_tumor_ids[1:4],
+      ref_genome = "hg38"),
+    regexp = "Mismatch between length of"
+  )
+
+
+
 
 })
