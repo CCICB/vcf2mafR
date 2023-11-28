@@ -213,9 +213,9 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
 }
 
 
-#' VCF to MAF
+#' Convert Annotated VCF to MAF-compatible data.frame
 #'
-#' Convert a vep-annotated VCF file to a MAF-compatible data.frame
+#' @inherit vcf2df description
 #'
 #' @inheritParams vcf2df
 #' @inheritParams df2maf
