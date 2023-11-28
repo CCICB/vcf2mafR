@@ -69,7 +69,7 @@ df2maf(
 a maf-like data.frame (data.table)
 }
 \description{
-Converts a VEP-like dataframe with to a minimal MAF dataframe.
+Converts a VEP-like (chr-pos-ref-alt-consequence-sample style) dataframe with to a minimal MAF dataframe.
 \strong{Input dataframe should include the columns:}
 \itemize{
 \item \strong{chr}
@@ -83,4 +83,13 @@ Converts a VEP-like dataframe with to a minimal MAF dataframe.
 }
 \details{
 Alternate column names can be used, but require \strong{col_chrom}, \strong{col_pos}, \strong{col_\if{html}{\out{<etc>}}} arguments to be supplied.
+}
+\examples{
+
+# Start with a vcf/maf-like 'chr-pos-ref-alt-consequence-sample' data.frame
+df = read.csv(system.file(package = "vcf2mafR", "testfiles/test_so.tsv"), sep = "\t")
+
+# Convert to a MAF dataframe
+df2maf(df, ref_genome = "hg38")
+
 }

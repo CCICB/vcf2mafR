@@ -1,6 +1,6 @@
 #' Convert VCF-like data.frame to MAF
 #'
-#' Converts a VEP-like dataframe with to a minimal MAF dataframe.
+#' Converts a VEP-like (chr-pos-ref-alt-consequence-sample style) dataframe with to a minimal MAF dataframe.
 #' **Input dataframe should include the columns:**
 #' * **chr**
 #' * **pos** (1-based)
@@ -34,6 +34,13 @@
 #' @return a maf-like data.frame (data.table)
 #' @export
 #'
+#' @examples
+#'
+#' # Start with a vcf/maf-like 'chr-pos-ref-alt-consequence-sample' data.frame
+#' df = read.csv(system.file(package = "vcf2mafR", "testfiles/test_so.tsv"), sep = "\t")
+#'
+#' # Convert to a MAF dataframe
+#' df2maf(df, ref_genome = "hg38")
 #'
 df2maf <- function(data,
                    ref_genome,
