@@ -14,7 +14,7 @@ df2maf(
   col_ref = "ref",
   col_alt = "alt",
   col_consequence = "consequence",
-  consequence_dictionary = c("SO", "PAVE"),
+  consequence_dictionary = c("SO", "PAVE", "AUTO"),
   col_gene = "gene",
   col_center = NULL,
   col_entrez_gene_id = NULL,
