@@ -20,7 +20,7 @@
 #' @param col_ref name of column describing the reference allele (string)
 #' @param col_alt name of column describing the alternate allele (string)
 #' @param col_sample_identifier name of column describing the sample containing the mutation (string)
-#' @param col_consequence name of column describing the consequence of the mutation (in SO ontology terms e.g. those that VEP would use) containing the mutation (string)
+#' @param col_consequence name of column describing the consequence of the mutation (in SO ontology terms e.g. those that VEP would use OR PAVE ontology terms) containing the mutation (string)
 #' @param col_gene name of column containing Hugo_Symbol of the gene affected by the mutation (string)
 #' @param col_entrez_gene_id name of column containing entrez gene IDs (string)
 #' @param col_center name of column containing the genome sequencing center reporting the variant (string)
@@ -30,6 +30,7 @@
 #' @param col_sequencer name of column describing the instrument used to produce data (string)
 #' @param col_sequence_source name of column describing the molecular assay type used to produce the analytes used for sequencing (string). Elements are usually one of 'WGS', 'WGA', 'WXS', 'RNA-seq', etc
 #' @param col_mutation_status name of column describing the mutation status (string). Elements must be one of: None, Germline, Somatic, LOH, Post-transcriptional modification, or Unknown
+#' @param consequence_dictionary What dictionary is to describe variant consequences (SO / PAVE / etc)
 #' @return a maf-like data.frame (data.table)
 #' @export
 #'
@@ -43,6 +44,7 @@ df2maf <- function(data,
                    col_ref = "ref",
                    col_alt = "alt",
                    col_consequence = "consequence",
+                   consequence_dictionary = c("SO", "PAVE"),
                    col_gene = "gene",
                    col_center = NULL,
                    col_entrez_gene_id = NULL,
@@ -51,7 +53,7 @@ df2maf <- function(data,
                    col_matched_normal_sample_identifier = NULL,
                    col_sequencer = NULL,
                    col_sequence_source = NULL,
-                   col_mutation_status = NULL) {
+                   col_mutation_status = NULL){
 
   # Assertions
   assertions::assert_dataframe(data)
@@ -68,6 +70,7 @@ df2maf <- function(data,
 
   old_names <- c(col_chrom, col_pos, col_sample_identifier, col_ref, col_alt, col_consequence, col_gene)
   new_names <- c("Chromosome", "Position_1based", "Tumor_Sample_Barcode", "Reference_Allele", "Tumor_Seq_Allele2", "Consequence", "Hugo_Symbol")
+  consequence_dictionary <- rlang::arg_match(consequence_dictionary)
 
   # Eliminate no visible global binding
   Reference_Allele <- NULL
@@ -222,7 +225,10 @@ df2maf <- function(data,
 
 
   # Convert SO to MAF mutation types
-  dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_so_to_maf(so_mutation_types = Consequence, variant_type = Variant_Type, inframe = Inframe)]
+  if(consequence_dictionary == "SO")
+    dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_so_to_maf(so_mutation_types = Consequence, variant_type = Variant_Type, inframe = Inframe)]
+  else if (consequence_dictionary == "PAVE")
+    dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_pave_to_maf(pave_mutation_types = Consequence, variant_type = Variant_Type)]
 
 
   # Add reference genome
