@@ -229,7 +229,6 @@ df2maf <- function(data,
     consequence_dictionary <- mutationtypes::mutation_types_identify(dt_maf[['Consequence']], split_on_ampersand = TRUE)
   }
 
-
   if(consequence_dictionary == "SO")
     dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_so_to_maf(so_mutation_types = Consequence, variant_type = Variant_Type, inframe = Inframe)]
   else if (consequence_dictionary == "PAVE")
