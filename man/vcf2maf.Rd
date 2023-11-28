@@ -2,7 +2,7 @@
 % Please edit documentation in R/vcf2df.R
 \name{vcf2maf}
 \alias{vcf2maf}
-\title{VCF to MAF}
+\title{Convert Annotated VCF to MAF-compatible data.frame}
 \usage{
 vcf2maf(
   vcf,
@@ -36,7 +36,12 @@ vcf2maf(
 a maf compatible data.frame
 }
 \description{
-Convert a vep-annotated VCF file to a MAF-compatible data.frame
+Expects a vepped VCF. VEP must be run with a couple of options:
+\enumerate{
+\item Identifiers: Gene symbol & Transcript Version & (HGVS: optional)
+\item Transcript annotation: Transcript biotype & 'Identify canonical transcripts'
+\item (Optional) If using the commandline version of vep also make sure to use --total_length (helps in transcript choice)
+}
 }
 \examples{
 path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
