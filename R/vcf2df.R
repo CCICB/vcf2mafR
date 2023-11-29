@@ -229,7 +229,7 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
 #'
 
 vcf2maf <- function(
-    vcf, ref_genome, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL" ,verbose = TRUE, debug_mode = FALSE){
+    vcf, ref_genome, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", missing_to_silent = TRUE, verbose = TRUE, debug_mode = FALSE){
   df <- vcf2df(
     vcf = vcf,
     tumor_id = tumor_id,

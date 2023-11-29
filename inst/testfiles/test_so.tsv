@@ -14,7 +14,7 @@ chr	pos	sample	ref	alt	gene	consequence
 1	13013	sample2	A	G	GeneM	splice_acceptor_variant
 1	14014	sample2	C	T	GeneN	intron_variant
 1	15015	sample2	G	A	GeneO	stop_lost
-2	16016	sample2	T	C	GeneP	start_lost
+2	16016	sample2	T	C	GeneP	regulatory_region_ablation
 2	17017	sample2	A	G	GeneQ	synonymous_variant
 2	18018	sample2	C	G	GeneR	missense_variant
 2	19019	sample2	G	AC	GeneS	frameshift_variant
