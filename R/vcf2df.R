@@ -208,7 +208,8 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
   df_final <- df_vcf_somatic |>
     dplyr::left_join(maflike_df, by = "variant_id")
 
-  cli::cli_alert_success("{.strong vcf2df successful}")
+  if(verbose) cli::cli_alert_success("{.strong vcf2df successful}")
+
   return(df_final)
 }
 
@@ -227,9 +228,9 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
 #' path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
 #' vcf2maf(vcf = path_vcf_vepped, ref_genome = "b38")
 #'
-
 vcf2maf <- function(
     vcf, ref_genome, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", missing_to_silent = TRUE, verbose = TRUE, debug_mode = FALSE){
+
   df <- vcf2df(
     vcf = vcf,
     tumor_id = tumor_id,
@@ -258,7 +259,8 @@ vcf2maf <- function(
     col_matched_normal_sample_identifier = NULL,
     col_sequencer = NULL,
     col_sequence_source = NULL,
-    col_mutation_status = NULL
+    col_mutation_status = NULL,
+    verbose = verbose
   )
 }
 

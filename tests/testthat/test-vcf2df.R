@@ -2,16 +2,16 @@ test_that("vcf2df works", {
 
   # Throw error if not vepped
   path_vcf_unannotated <- system.file("testfiles/test_b38.vcf", package = "vcf2mafR")
-  expect_error(vcf2maf(vcf = path_vcf_unannotated, verbose = FALSE), "Are you sure the VCF is VEP-annotated")
+  expect_error(vcf2maf(vcf = path_vcf_unannotated) |> suppressMessages(), "Are you sure the VCF is VEP-annotated")
 
   # Throw error if transcript CANONICAL status not annotated by VEP
   path_vcf_annotated_no_canonical <- system.file("testfiles/test_b38.vepgui.canonical_not_included.vcf", package = "vcf2mafR")
-  expect_error(vcf2maf(path_vcf_annotated_no_canonical, verbose = FALSE), regexp = "Failed to find column [CANONICAL] in vep annotations. Please rerun VEP with `Identify Canonical Transcripts` option turned on", fixed = TRUE)
+  expect_error(vcf2maf(path_vcf_annotated_no_canonical) |> suppressMessages(), regexp = "Failed to find column [CANONICAL] in vep annotations. Please rerun VEP with `Identify Canonical Transcripts` option turned on", fixed = TRUE)
 
 
   # Throw error if transcript CANONICAL status not annotated by VEP
   path_vcf_vepped <- system.file("testfiles/test_b38.vepgui.vcf", package = "vcf2mafR")
-  df <- expect_error(vcf2maf(path_vcf_vepped, ref_genome = 'hg38', verbose = FALSE), regexp = NA)
+  df <- expect_error(vcf2maf(path_vcf_vepped, ref_genome = 'hg38') |> suppressMessages(), regexp = NA)
 
   ## Check outputs make sense
   # Tumor_Sample_Barcode Makes Sense
@@ -30,13 +30,13 @@ test_that("vcfs2maf works", {
   vcf_filepaths = dir(system.file(package='vcf2mafR', 'testfiles/cohort_of_vcfs/'), full.names = TRUE)
 
   # Works without error on valid inputs
-  expect_error(vcfs2maf(vcf_filepaths, ref_genome = "hg38", verbose = FALSE), NA)
+  expect_error(vcfs2maf(vcf_filepaths, ref_genome = "hg38") |> suppressMessages(), NA)
 
   # Throws Error If Generic VCF sample names from different VCFs are at risk of being lumped into the same 'sample' in the MAF
-  expect_error(vcfs2maf(vcfs = vcf_filepaths, tumor_id = c('a', 'b', 'c', 'd', 'd'), parse_tumor_id_from_filename = FALSE, ref_genome = "hg38"), "ound duplicated")
+  expect_error(vcfs2maf(vcfs = vcf_filepaths, tumor_id = c('a', 'b', 'c', 'd', 'd'), parse_tumor_id_from_filename = FALSE, ref_genome = "hg38") |> suppressMessages(), "ound duplicated")
 
   # (Same as above but due to duplicated filenames)
-  expect_error(vcfs2maf(vcfs = c(vcf_filepaths, vcf_filepaths[1]), parse_tumor_id_from_filename = TRUE, ref_genome = "hg38"), "Attempt to parse sample")
+  expect_error(vcfs2maf(vcfs = c(vcf_filepaths, vcf_filepaths[1]), parse_tumor_id_from_filename = TRUE, ref_genome = "hg38") |> suppressMessages(), "Attempt to parse sample")
 
 
   # Works when vcf_tumor_id is manually specified as a vector
@@ -47,7 +47,7 @@ test_that("vcfs2maf works", {
       vcfs = vcf_filepaths,
       parse_tumor_id_from_filename = TRUE,
       vcf_tumor_id = vcf_tumor_ids,
-      ref_genome = "hg38"),
+      ref_genome = "hg38") |> suppressMessages(),
     regexp = NA
     )
 
@@ -56,7 +56,7 @@ test_that("vcfs2maf works", {
       vcfs = vcf_filepaths,
       parse_tumor_id_from_filename = TRUE,
       vcf_tumor_id = vcf_tumor_ids[1:4],
-      ref_genome = "hg38"),
+      ref_genome = "hg38") |> suppressMessages(),
     regexp = "Mismatch between length of"
   )
 

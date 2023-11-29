@@ -24,7 +24,8 @@ df2maf(
   col_matched_normal_sample_identifier = NULL,
   col_sequencer = NULL,
   col_sequence_source = NULL,
-  col_mutation_status = NULL
+  col_mutation_status = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -67,6 +68,8 @@ df2maf(
 \item{col_sequence_source}{name of column describing the molecular assay type used to produce the analytes used for sequencing (string). Elements are usually one of 'WGS', 'WGA', 'WXS', 'RNA-seq', etc}
 
 \item{col_mutation_status}{name of column describing the mutation status (string). Elements must be one of: None, Germline, Somatic, LOH, Post-transcriptional modification, or Unknown}
+
+\item{verbose}{verbose (flag)}
 }
 \value{
 a maf-like data.frame (data.table)
