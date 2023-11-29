@@ -32,6 +32,7 @@
 #' @param col_mutation_status name of column describing the mutation status (string). Elements must be one of: None, Germline, Somatic, LOH, Post-transcriptional modification, or Unknown
 #' @param consequence_dictionary What dictionary is to describe variant consequences (SO / PAVE / etc)
 #' @param missing_to_silent Assyne any missing (NA) or empty ('') consequences are 'Silent' mutations
+#' @param verbose verbose (flag)
 #' @return a maf-like data.frame (data.table)
 #' @export
 #'
@@ -62,7 +63,8 @@ df2maf <- function(data,
                    col_matched_normal_sample_identifier = NULL,
                    col_sequencer = NULL,
                    col_sequence_source = NULL,
-                   col_mutation_status = NULL){
+                   col_mutation_status = NULL,
+                   verbose = TRUE){
 
   # Assertions
   assertions::assert_dataframe(data)
@@ -76,6 +78,8 @@ df2maf <- function(data,
   assertions::assert_names_include(data, names = c(col_chrom, col_pos, col_sample_identifier, col_ref, col_alt, col_consequence, col_gene))
   assertions::assert_string(ref_genome)
   assertions::assert_flag(keep_all)
+  assertions::assert_flag(missing_to_silent)
+  assertions::assert_flag(verbose)
 
   old_names <- c(col_chrom, col_pos, col_sample_identifier, col_ref, col_alt, col_consequence, col_gene)
   new_names <- c("Chromosome", "Position_1based", "Tumor_Sample_Barcode", "Reference_Allele", "Tumor_Seq_Allele2", "Consequence", "Hugo_Symbol")
@@ -235,13 +239,13 @@ df2maf <- function(data,
 
   # Convert SO to MAF mutation types
   if (consequence_dictionary == "AUTO"){
-    consequence_dictionary <- mutationtypes::mutation_types_identify(dt_maf[['Consequence']], split_on_ampersand = TRUE, ignore_missing = missing_to_silent)
+    consequence_dictionary <- mutationtypes::mutation_types_identify(dt_maf[['Consequence']], split_on_ampersand = TRUE, ignore_missing = missing_to_silent, verbose = verbose)
   }
 
   if(consequence_dictionary == "SO")
-    dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_so_to_maf(so_mutation_types = Consequence, variant_type = Variant_Type, inframe = Inframe, missing_to_silent = missing_to_silent)]
+    dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_so_to_maf(so_mutation_types = Consequence, variant_type = Variant_Type, inframe = Inframe, missing_to_silent = missing_to_silent, verbose = verbose)]
   else if (consequence_dictionary == "PAVE")
-    dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_pave_to_maf(pave_mutation_types = Consequence, variant_type = Variant_Type, missing_to_silent = missing_to_silent)]
+    dt_maf[, "Variant_Classification" := mutationtypes::mutation_types_convert_pave_to_maf(pave_mutation_types = Consequence, variant_type = Variant_Type, missing_to_silent = missing_to_silent, verbose = verbose)]
   else {
    stop('Consequence Dictionary [', consequence_dictionary ,'] is not yet supported')
   }
