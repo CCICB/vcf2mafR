@@ -11,6 +11,7 @@ vcf2maf(
   normal_id = vcf_normal_id,
   vcf_tumor_id = "TUMOR",
   vcf_normal_id = "NORMAL",
+  missing_to_silent = TRUE,
   verbose = TRUE,
   debug_mode = FALSE
 )
@@ -27,6 +28,8 @@ vcf2maf(
 \item{vcf_tumor_id}{the sample ID describing the tumor in the (string)}
 
 \item{vcf_normal_id}{the sample ID describing the normal in the (string)}
+
+\item{missing_to_silent}{Assyne any missing (NA) or empty ('') consequences are 'Silent' mutations}
 
 \item{verbose}{(flag)}
 

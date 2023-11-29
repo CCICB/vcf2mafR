@@ -31,6 +31,7 @@
 #' @param col_sequence_source name of column describing the molecular assay type used to produce the analytes used for sequencing (string). Elements are usually one of 'WGS', 'WGA', 'WXS', 'RNA-seq', etc
 #' @param col_mutation_status name of column describing the mutation status (string). Elements must be one of: None, Germline, Somatic, LOH, Post-transcriptional modification, or Unknown
 #' @param consequence_dictionary What dictionary is to describe variant consequences (SO / PAVE / etc)
+#' @param missing_to_silent Assyne any missing (NA) or empty ('') consequences are 'Silent' mutations
 #' @return a maf-like data.frame (data.table)
 #' @export
 #'

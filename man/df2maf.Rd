@@ -15,6 +15,7 @@ df2maf(
   col_alt = "alt",
   col_consequence = "consequence",
   consequence_dictionary = c("SO", "PAVE", "AUTO"),
+  missing_to_silent = FALSE,
   col_gene = "gene",
   col_center = NULL,
   col_entrez_gene_id = NULL,
@@ -46,6 +47,8 @@ df2maf(
 \item{col_consequence}{name of column describing the consequence of the mutation (in SO ontology terms e.g. those that VEP would use OR PAVE ontology terms) containing the mutation (string)}
 
 \item{consequence_dictionary}{What dictionary is to describe variant consequences (SO / PAVE / etc)}
+
+\item{missing_to_silent}{Assyne any missing (NA) or empty ('') consequences are 'Silent' mutations}
 
 \item{col_gene}{name of column containing Hugo_Symbol of the gene affected by the mutation (string)}
 
