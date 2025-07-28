@@ -21,8 +21,8 @@
 #'
 #' @examples
 #' path_vcf <- system.file(package = "vcf2mafR", "testfiles/test_b38.vepgui.vcf")
-#' vcf2df(path_vcf)
-vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", debug_mode = FALSE, verbose = TRUE) {
+#' vcf2df_vep(path_vcf)
+vcf2df_vep <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", debug_mode = FALSE, verbose = TRUE) {
 
   # Assertions
   assertions::assert_string(vcf)
@@ -34,7 +34,6 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
   assertions::assert_flag(debug_mode)
   assertions::assert_flag(verbose)
 
-
   # Read VCF
   if(verbose) cli::cli_h1(text = "Reading VCF")
   vcfR <- vcfR::read.vcfR(vcf, verbose = FALSE) # May need to increase default limit
@@ -45,6 +44,7 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
   vep_in_meta <- any(grepl(x = vcfR@meta, pattern = "^##VEP="))
 
   if(verbose) cli::cli_progress_step(msg = "Looking for ##VEP entry in VCF header")
+
   assertions::assert(
     vep_in_meta,
     msg = "Failed to find VEP annotation step in VCF header (##VEP). Are you sure the VCF is VEP-annotated?"
@@ -92,12 +92,6 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
     Fix this error by changing {.arg vcf_tumor_id} and {.arg vcf_normal_id} arguments the Tumor / Normal sample identifiers present in your VCF"
   )
 
-
-
-  #df_vcf_normal <- df_vcf |>
-   # dplyr::filter(sample_type == "Normal") |>
-    #dplyr::rename("Matched_Norm_Sample_Barcode" = sample, "Match_Norm_Seq_Allele1" = ref, "Match_Norm_Seq_Allele2" = alt) |> # Clear Match_Norm_Seq_Allele1 and Match_Norm_Seq_Allele2 in somatic maf (could contain germline information)
-    #dplyr::select(Matched_Norm_Sample_Barcode, Match_Norm_Seq_Allele1, Match_Norm_Seq_Allele2)
 
   # Remove normal variants (technically we should pull out the normal sample ref/alt but in somatic MAFs we remove those anyway for privacy reasons, so we'll ignore
   df_vcf_somatic <- df_vcf |>
@@ -216,9 +210,10 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
 
 #' Convert Annotated VCF to MAF-compatible data.frame
 #'
-#' @inherit vcf2df description
+#' @inherit vcf2df_vep description
 #'
-#' @inheritParams vcf2df
+#' @param anno What annotation tool was used. One of PAVE (oncoanalyser default) or VEP?
+#' @inheritParams vcf2df_vep
 #' @inheritParams df2maf
 #'
 #' @return a maf compatible data.frame
@@ -229,17 +224,36 @@ vcf2df <- function(vcf, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_
 #' vcf2maf(vcf = path_vcf_vepped, ref_genome = "b38")
 #'
 vcf2maf <- function(
-    vcf, ref_genome, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", missing_to_silent = TRUE, verbose = TRUE, debug_mode = FALSE){
+    vcf, ref_genome, tumor_id = vcf_tumor_id, normal_id = vcf_normal_id, vcf_tumor_id = "TUMOR", vcf_normal_id = "NORMAL", anno = c("PAVE", "VEP"), missing_to_silent = TRUE, verbose = TRUE, debug_mode = FALSE){
 
-  df <- vcf2df(
-    vcf = vcf,
-    tumor_id = tumor_id,
-    normal_id = normal_id,
-    vcf_tumor_id = vcf_tumor_id,
-    vcf_normal_id = vcf_normal_id,
-    debug_mode = debug_mode,
-    verbose = verbose
-  )
+  rlang::check_required(ref_genome)
+  anno <- rlang::arg_match(anno)
+
+  if(anno == "VEP"){
+    df <- vcf2df_vep(
+      vcf = vcf,
+      tumor_id = tumor_id,
+      normal_id = normal_id,
+      vcf_tumor_id = vcf_tumor_id,
+      vcf_normal_id = vcf_normal_id,
+      debug_mode = debug_mode,
+      verbose = verbose
+    )
+  }
+
+  else if(anno == "PAVE"){
+    df <- vcf2df_pave(
+        vcf = vcf,
+        tumor_id = tumor_id,
+        normal_id = normal_id,
+        vcf_tumor_id = vcf_tumor_id,
+        vcf_normal_id = vcf_normal_id,
+        debug_mode = debug_mode,
+        verbose = verbose
+    )
+  }
+
+
 
   df2maf(
     data = df,
